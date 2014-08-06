@@ -32,11 +32,6 @@ To build the project or use the library, you will need XCode 5 or newer,
 and at least the iOS 7.0 library.
 
 #### Step-by-step guide
-1.  Download the [Catchoom Image Recognition SDK](http://catchoom.com/documentation/sdk/android-image-recognition-sdk/) for Android.
-2.  Unzip the package
-3.  Copy the libs folder into the root of the project.
-
-#### Step-by-step guide
 1.  Download the [Catchoom Image Recognition SDK](http://catchoom.com/documentation/sdk/ios-image-recognition-sdk/) for iOS.
 2.  Unzip the package
 3.  Drag the following files into the project:
