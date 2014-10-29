@@ -1,4 +1,4 @@
-## Catchoom CraftAR - iOS Image Recognition SDK examples
+## CraftAR - iOS Image Recognition SDK examples
 
 ### Introduction
 
