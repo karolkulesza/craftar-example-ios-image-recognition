@@ -1,23 +1,23 @@
 //
 //  CloudRecognitionSnapPhotoViewController.m
-//  catchoom-sdk-sampleapp
+//  craftar-sdk-sampleapp
 //
 //  Created by Luis Martinell Andreu on 9/17/13.
 //  Copyright (c) 2013 Catchoom. All rights reserved.
 //
 
-#import "CloudRecognitionFinderModeViewController.h"
-#import <CatchoomSDK/CatchoomSDK.h>
-#import <CatchoomSDK/CatchoomCloudRecognitionItem.h>
+#import "CloudRecognitionOneShotViewController.h"
+#import <CraftARSDK/CraftARSDK.h>
+#import <CraftARSDK/CraftARItem.h>
 
-@interface CloudRecognitionFinderModeViewController () <CatchoomSDKProtocol, CatchoomCloudRecognitionProtocol> {
-    CatchoomSDK *_sdk;
-    CatchoomCloudRecognition *_crs;
+@interface CloudRecognitionOneShotViewController () <CraftARSDKProtocol, CraftARCloudRecognitionProtocol> {
+    CraftARSDK *_sdk;
+    CraftARCloudRecognition *_crs;
 }
 
 @end
 
-@implementation CloudRecognitionFinderModeViewController
+@implementation CloudRecognitionOneShotViewController
 
 #pragma mark view initialization
 
@@ -34,8 +34,8 @@
 {
     [super viewDidLoad];
     
-    // setup the Catchoom SDK
-    _sdk = [CatchoomSDK sharedCatchoomSDK];
+    // setup the CraftAR SDK
+    _sdk = [CraftARSDK sharedCraftARSDK];
     _sdk.delegate = self;
     
     _crs = [_sdk getCloudRecognitionInterface];
@@ -55,19 +55,23 @@
 #pragma mark Snap Photo mode implementation
 
 - (void) didStartCapture {
-    self._scanningOverlay.hidden = NO;
-    [self._scanningOverlay setNeedsDisplay];
-    [_crs startFinderMode];
+    self._previewOverlay.hidden = NO;
 }
 
+- (IBAction)snapPhotoToSearch:(id)sender {
+    self._previewOverlay.hidden = YES;
+    self._scanningOverlay.hidden = NO;
+    [self._scanningOverlay setNeedsDisplay];
+    [_crs singleShotSearch];
+    
+}
 
 - (void) didGetSearchResults:(NSArray *)resultItems {
     self._scanningOverlay.hidden = YES;
-    [_crs stopFinderMode];
     
     if ([resultItems count] >= 1) {
         // Found one item, launch its content on a webView:
-        CatchoomCloudRecognitionItem *item = [resultItems objectAtIndex:0];
+        CraftARItem *item = [resultItems objectAtIndex:0];
         
         // Open URL in Webview
         UIViewController *webViewController = [[UIViewController alloc] init];
@@ -76,18 +80,31 @@
         uiWebView.scalesPageToFit = YES;
         [webViewController.view addSubview: uiWebView];
         [self.navigationController pushViewController:webViewController animated:YES];
+        self._previewOverlay.hidden = NO;
+        self._scanningOverlay.hidden = YES;
+        [_sdk unfreezeCapture];
+        
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] init];
+        [alert setTitle:@"Nothing found"];
+        [alert setDelegate:self];
+        [alert addButtonWithTitle:@"Ok"];
+        [alert show];
         self._scanningOverlay.hidden = YES;
     }
-    self._scanningOverlay.hidden = NO;
-    [self._scanningOverlay setNeedsDisplay];
-    [_crs startFinderMode];
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    self._previewOverlay.hidden = NO;
+    [_sdk unfreezeCapture];
+}
 
-- (void) didFailWithError:(CatchoomSDKError *)error {
-    self._scanningOverlay.hidden = NO;
-    [self._scanningOverlay setNeedsDisplay];
-    [_crs startFinderMode];
+- (void) didFailWithError:(CraftARSDKError *)error {
+    // Check the error type
+    NSLog(@"Error calling CRS: %@", [error localizedDescription]);
+    self._previewOverlay.hidden = NO;
+    self._scanningOverlay.hidden = YES;
+    [_sdk unfreezeCapture];
 }
 
 - (void) didValidateToken {
