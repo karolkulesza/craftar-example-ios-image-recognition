@@ -13,6 +13,7 @@
 @interface CloudRecognitionFinderModeViewController () <CraftARSDKProtocol, CraftARCloudRecognitionProtocol> {
     CraftARSDK *_sdk;
     CraftARCloudRecognition *_crs;
+    bool _captureStarted;
 }
 
 @end
@@ -47,6 +48,11 @@
     [super viewWillAppear:animated];
     // Start Video Preview for search and tracking
     [_sdk startCaptureWithView:self._preview];
+    
+    if (_captureStarted) {
+        _sdk.delegate = self;
+        [_crs startFinderMode];
+    }
 }
 
 #pragma mark -
@@ -55,6 +61,7 @@
 #pragma mark Snap Photo mode implementation
 
 - (void) didStartCapture {
+    _captureStarted=YES;
     self._scanningOverlay.hidden = NO;
     [self._scanningOverlay setNeedsDisplay];
     [_crs startFinderMode];
@@ -77,10 +84,11 @@
         [webViewController.view addSubview: uiWebView];
         [self.navigationController pushViewController:webViewController animated:YES];
         self._scanningOverlay.hidden = YES;
+    } else {
+        self._scanningOverlay.hidden = NO;
+        [self._scanningOverlay setNeedsDisplay];
+        [_crs startFinderMode];
     }
-    self._scanningOverlay.hidden = NO;
-    [self._scanningOverlay setNeedsDisplay];
-    [_crs startFinderMode];
 }
 
 
