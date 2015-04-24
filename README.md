@@ -41,6 +41,6 @@ and at least the iOS 7.0 library.
 #### Step-by-step guide
 1.  Download the [CraftAR iOS Image Recognition SDK](http://catchoom.com/product/craftar/augmented-reality-and-image-recognition-sdk/#download-mobile-sdk).
 2.  Unzip the package
-3.  Drag the following files into the project:
+3.  Drag the following files into the ExternalFrameworks directory of the project folder using Finder:
  * CraftARSDK.framework
  * Pods.framework
