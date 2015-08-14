@@ -236,11 +236,6 @@
 			attributes = {
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Luis Martinell Andreu";
-				TargetAttributes = {
-					A01F3D731845FA5A003D8D62 = {
-						DevelopmentTeam = RWHT6ZS295;
-					};
-				};
 			};
 			buildConfigurationList = A01F3D6F1845FA5A003D8D62 /* Build configuration list for PBXProject "CraftARSDK_Examples" */;
 			compatibilityVersion = "Xcode 3.2";
